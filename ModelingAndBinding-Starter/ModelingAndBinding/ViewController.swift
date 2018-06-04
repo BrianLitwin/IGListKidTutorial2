@@ -17,6 +17,19 @@ class ViewController: UIViewController, ListAdapterDataSource {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        data.append(Post(
+            username: "@janedoe",
+            timestamp: "15min",
+            imageURL: URL(string: "https://placekitten.com/g/375/250")!,
+            likes: 384,
+            comments: [
+                Comment(username: "@ryan", text: "this is beautiful!"),
+                Comment(username: "@jsq", text: "😱"),
+                Comment(username: "@caitlin", text: "#blessed"),
+                ]
+        ))
+        
         adapter.dataSource = self
         adapter.collectionView = self.collectionView
     }
@@ -28,7 +41,7 @@ class ViewController: UIViewController, ListAdapterDataSource {
     }
 
     func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
-        return ListSectionController()
+        return PostSectionController()
     }
 
     func emptyView(for listAdapter: ListAdapter) -> UIView? { return nil }

@@ -8,11 +8,15 @@
 
 import IGListKit
 
-final class PostSectionController: ListBindingSectionController<Post>, ListBindingSectionControllerDataSource {
+final class PostSectionController: ListBindingSectionController<Post>, ListBindingSectionControllerDataSource,
+    ActionCellDelegate {
+
     override init() {
         super.init()
         dataSource = self
     }
+    
+    var localLikes: Int? = nil
     
     //Mark: ListBindingSectionControllerDataSource
     
@@ -21,7 +25,7 @@ final class PostSectionController: ListBindingSectionController<Post>, ListBindi
         let results: [ListDiffable] = [
             UserViewModel(username: object.username, timestamp: object.timestamp),
             ImageViewModel(url: object.imageURL),
-            ActionViewModel(likes: object.likes)
+            ActionViewModel(likes: localLikes ?? object.likes)
         ]
         
         return results + object.comments
@@ -42,4 +46,34 @@ final class PostSectionController: ListBindingSectionController<Post>, ListBindi
         return CGSize(width: width, height: height)
     }
     
+    func sectionController(
+        _ sectionController: ListBindingSectionController<ListDiffable>,
+        cellForViewModel viewModel: Any,
+        at index: Int
+        ) -> UICollectionViewCell {
+        let identifier: String
+        switch viewModel {
+        case is ImageViewModel: identifier = "image"
+        case is Comment: identifier = "comment"
+        case is UserViewModel: identifier = "user"
+        default: identifier = "action"
+        }
+        
+        guard let cell = collectionContext?
+            .dequeueReusableCellFromStoryboard(withIdentifier: identifier, for: self, at: index)
+            else { fatalError() }
+        
+        
+        if let cell = cell as? ActionCell {
+            cell.delegate = self
+        }
+        
+        return cell
+    }
+    
+    func didTapHeart(cell: ActionCell) {
+        localLikes = (localLikes ?? object?.likes ?? 0) + 1
+        update(animated: true)
+    }
+
 }

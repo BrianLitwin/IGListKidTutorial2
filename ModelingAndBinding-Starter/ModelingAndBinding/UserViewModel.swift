@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import IGListKit
 
 class UserViewModel: ListDiffable {
     let username: String
