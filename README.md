@@ -1,1 +1,1 @@
-# IGListKidTutorial2
+# IGListKitTutorial2
